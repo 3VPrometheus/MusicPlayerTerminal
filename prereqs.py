@@ -15,7 +15,9 @@ def get_prereqs():
             os.system(f"pip install {module}")
 
     # Create the necessary directories
-    directories = ["/data/data/com.termux/files/home/Music", "/storage/emulated/0/Music"]
+    directories = ["~/data/data/com.termux/files/home/Music", "~/storage/emulated/0/Music"]
     for directory in directories:
         if not os.path.exists(directory):
             os.makedirs(directory)
+
+get_prereqs()
