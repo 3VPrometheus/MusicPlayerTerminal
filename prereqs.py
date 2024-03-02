@@ -19,5 +19,3 @@ def get_prereqs():
     for directory in directories:
         if not os.path.exists(directory):
             os.makedirs(directory)
-
-get_prereqs()
