@@ -1,14 +1,20 @@
 from shutil import copy
 from youtubesearchpython import VideosSearch
 from pytube import YouTube
+import sys
+from argparse import ArgumentParser
 
 # This app is designed to be run in a Termux environment, so the following code is designed to work in that environment
 
 class Downloader:
-    
+    '''
+    This class is designed to search for and download music from YouTube
+    '''
     @staticmethod
     def SearchYoutube(searchTerm : str, numResults : int) -> str:
-
+        '''
+        This method searches for a song on YouTube and returns the link to the video
+        '''
         videos = VideosSearch(searchTerm, numResults).result()
 
         videoIDs = {}
@@ -35,23 +41,35 @@ class Downloader:
     
     @staticmethod
     def downloadYouTubeAudio(videoLink : str, download_dir : str, file_name : str) -> None:
-
+        '''
+        This method downloads the audio from a YouTube video
+        '''
         YouTube(url=videoLink).streams.filter(only_audio=True).first().download(output_path=download_dir, filename=f"{file_name}.mp3")
 
 class MusicDownloader(Downloader):
 
     def __init__(self):
-        self.download_dir = "/data/data/com.termux/files/home/Music"
+        
         self.music_dir = "/storage/emulated/0/Music"
+
+        parser = ArgumentParser(prog="MusicDownloader", description="Termux command line tool to download music from YouTube")
+        parser.add_argument("--searchterm", type=str, help="The search term given to the YouTube search")
+        parser.add_argument("--numresults", type=int, help="The number of results to return from the YouTube search, default is 10", default=10)
+        parser.add_argument("--outfile", type=str, help="The name of the file to save the audio as. If not given, the file will be saved as [searchterm].mp3")
+        args = parser.parse_args()
+        
+        if not args.searchterm:
+            sys.exit("Error: --searchterm must be entered.")
+        else:
+            self.searchTerm = args.searchterm
+            self.numResults = args.numresults
+        
+        self.outputname = None
+        if args.outputname:
+            self.outputname = args.outputname
     
     def download_music(self):
-        searchTerm = input("Enter the name of the song you want to download: \n")
-        numResults = int(input("Enter the number of results you want to see: \n"))
+        video_link = self.SearchYoutube(self.searchTerm, self.numResults)
+        filename = self.outputname or self.searchTerm
         
-        video_link = self.SearchYoutube(searchTerm, numResults)
-        file_name = input("Enter what to name the audio file: \n")
-        
-        self.downloadYouTubeAudio(video_link, self.download_dir, file_name)
-        
-        # Copy the downloaded file to the music directory
-        copy(f"{self.download_dir}/{file_name}.mp3", f"{self.music_dir}/{file_name}.mp3")
+        self.downloadYouTubeAudio(video_link, self.music_dir, filename)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for module in "pytube" "youtubesearchpython" "moviepy" "shutil"
+for module in "pytube" "youtubesearchpython"
 
 do
     pip install $module > nullpip.txt
