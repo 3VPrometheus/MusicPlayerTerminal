@@ -73,3 +73,7 @@ class MusicDownloader(Downloader):
         filename = self.outputname or self.searchTerm
         
         self.downloadYouTubeAudio(video_link, self.music_dir, filename)
+
+if __name__ == "__main__":
+    music_downloader = MusicDownloader()
+    music_downloader.download_music()
