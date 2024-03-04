@@ -65,8 +65,8 @@ class MusicDownloader(Downloader):
             self.numResults = args.numresults
         
         self.outputname = None
-        if args.outputname:
-            self.outputname = args.outputname
+        if args.outfile:
+            self.outputname = args.outfile
     
     def download_music(self):
         video_link = self.SearchYoutube(self.searchTerm, self.numResults)
