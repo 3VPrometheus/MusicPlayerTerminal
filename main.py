@@ -1,4 +1,3 @@
-from shutil import copy
 from youtubesearchpython import VideosSearch
 from pytube import YouTube
 import sys
@@ -32,7 +31,7 @@ class Downloader:
         for i, vidTitle in enumerate(videoIDs.values()):
             print(f"[{i}] --> {vidTitle} || duration: {video_duration[i]}")
         
-        selection = int(input("Enter the number of the video you want to download: \n"))
+        selection = int(input("Enter the number of the video you want to download: "))
         
         videoID = list(videoIDs.keys())[selection]
         
@@ -50,12 +49,11 @@ class MusicDownloader(Downloader):
 
     def __init__(self):
         
-        self.music_dir = "/storage/emulated/0/Music"
+        self.music_dir = "/home/prometheus/Desktop/"
 
         parser = ArgumentParser(prog="MusicDownloader", description="Termux command line tool to download music from YouTube")
         parser.add_argument("--searchterm", type=str, help="The search term given to the YouTube search")
         parser.add_argument("--numresults", type=int, help="The number of results to return from the YouTube search, default is 10", default=10)
-        parser.add_argument("--outfile", type=str, help="The name of the file to save the audio as. If not given, the file will be saved as [searchterm].mp3")
         args = parser.parse_args()
         
         if not args.searchterm:
@@ -64,15 +62,12 @@ class MusicDownloader(Downloader):
             self.searchTerm = args.searchterm
             self.numResults = args.numresults
         
-        self.outputname = None
-        if args.outfile:
-            self.outputname = args.outfile
-    
+
     def download_music(self):
+    
         video_link = self.SearchYoutube(self.searchTerm, self.numResults)
-        filename = self.outputname or self.searchTerm
-        
-        self.downloadYouTubeAudio(video_link, self.music_dir, filename)
+        self.downloadYouTubeAudio(video_link, self.music_dir, file_name=self.searchTerm)
+
 
 if __name__ == "__main__":
     music_downloader = MusicDownloader()
